@@ -13,12 +13,17 @@ import { v4 as uuid } from "uuid";
 
 import useStyles from "./styles.js";
 import { useExpenseTracker } from "../../../context/context.js";
+import {
+  incomeCategories,
+  expenseCategories
+} from "../../../constants/categories";
+import formatDate from "../../../utils/formatDate.js";
 
 const initialState = {
   amount: "",
   category: "",
   type: "",
-  date: Date()
+  date: formatDate(new Date())
 };
 
 const Form = () => {
@@ -39,6 +44,9 @@ const Form = () => {
     setFormData({ ...formData, [name]: value });
     console.log({ name, value });
   };
+
+  const selectedCategories =
+    formData.type === "Income" ? incomeCategories : expenseCategories;
 
   return (
     <Grid container spacing={2}>
@@ -64,9 +72,11 @@ const Form = () => {
             onChange={onHandleChange}
             name="category"
           >
-            <MenuItem value="business">Business</MenuItem>
-            <MenuItem value="business2">Business 2</MenuItem>
-            <MenuItem value="business3">Business 3</MenuItem>
+            {selectedCategories.map(category => (
+              <MenuItem key={category.type} value={category.type}>
+                {category.type}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Grid>
@@ -84,7 +94,9 @@ const Form = () => {
         <TextField
           type="date"
           value={formData.date}
-          onChange={onHandleChange}
+          onChange={({ target: { value } }) =>
+            setFormData({ ...formData, date: formatDate(value) })
+          }
           name="date"
           label="Date"
           fullWidth

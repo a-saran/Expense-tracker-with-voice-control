@@ -9,8 +9,10 @@ import {
   MenuItem,
   Select
 } from "@material-ui/core";
+import { v4 as uuid } from "uuid";
 
 import useStyles from "./styles.js";
+import { useExpenseTracker } from "../../../context/context.js";
 
 const initialState = {
   amount: "",
@@ -22,6 +24,16 @@ const initialState = {
 const Form = () => {
   const classes = useStyles();
   const [formData, setFormData] = useState(initialState);
+  const { addTransaction } = useExpenseTracker();
+
+  const createTransaction = () => {
+    const transaction = {
+      ...formData,
+      amount: Number(formData.amount),
+      id: uuid()
+    };
+    addTransaction(transaction);
+  };
 
   const onHandleChange = ({ target: { name, value } }) => {
     setFormData({ ...formData, [name]: value });
@@ -83,6 +95,7 @@ const Form = () => {
         variant="outlined"
         color="primary"
         fullWidth
+        onClick={createTransaction}
       >
         Create
       </Button>

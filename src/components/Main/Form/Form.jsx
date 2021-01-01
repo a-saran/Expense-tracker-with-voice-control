@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   TextField,
   Typography,
@@ -12,8 +12,22 @@ import {
 
 import useStyles from "./styles.js";
 
+const initialState = {
+  amount: "",
+  category: "",
+  type: "",
+  date: Date()
+};
+
 const Form = () => {
   const classes = useStyles();
+  const [formData, setFormData] = useState(initialState);
+
+  const onHandleChange = ({ target: { name, value } }) => {
+    setFormData({ ...formData, [name]: value });
+    console.log({ name, value });
+  };
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -24,7 +38,7 @@ const Form = () => {
       <Grid item xs={6}>
         <FormControl fullWidth>
           <InputLabel>Type</InputLabel>
-          <Select>
+          <Select value={formData.type} onChange={onHandleChange} name="type">
             <MenuItem value="Income">Income</MenuItem>
             <MenuItem value="Expense">Expense</MenuItem>
           </Select>
@@ -33,7 +47,11 @@ const Form = () => {
       <Grid item xs={6}>
         <FormControl fullWidth>
           <InputLabel>Category</InputLabel>
-          <Select>
+          <Select
+            value={formData.category}
+            onChange={onHandleChange}
+            name="category"
+          >
             <MenuItem value="business">Business</MenuItem>
             <MenuItem value="business2">Business 2</MenuItem>
             <MenuItem value="business3">Business 3</MenuItem>
@@ -41,10 +59,24 @@ const Form = () => {
         </FormControl>
       </Grid>
       <Grid item xs={6}>
-        <TextField type="number" label="Amount" fullWidth />
+        <TextField
+          type="number"
+          label="Amount"
+          name="amount"
+          value={formData.amount}
+          onChange={onHandleChange}
+          fullWidth
+        />
       </Grid>
       <Grid item xs={6}>
-        <TextField type="date" label="Date" fullWidth />
+        <TextField
+          type="date"
+          value={formData.date}
+          onChange={onHandleChange}
+          name="date"
+          label="Date"
+          fullWidth
+        />
       </Grid>
       <Button
         className={classes.button}

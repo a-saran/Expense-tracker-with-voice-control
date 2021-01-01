@@ -42,7 +42,6 @@ const Form = () => {
 
   const onHandleChange = ({ target: { name, value } }) => {
     setFormData({ ...formData, [name]: value });
-    console.log({ name, value });
   };
 
   const selectedCategories =

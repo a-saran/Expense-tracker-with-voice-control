@@ -108,6 +108,14 @@ const Form = () => {
   }, [segment]);
 
   const createTransaction = () => {
+    if (
+      !formData.amount ||
+      !formData.category ||
+      !formData.type ||
+      !formData.date
+    )
+      return;
+
     const transaction = {
       ...formData,
       amount: Number(formData.amount),

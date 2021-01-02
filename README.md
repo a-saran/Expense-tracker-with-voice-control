@@ -1,6 +1,6 @@
 # Expense Tracker
 
-[live](https://expense-tracker-shaan.netlify.app/)
+[Live Site here](https://expense-tracker-shaan.netlify.app/)
 
 A Custom expense tracker with voice assistance and income/expense charts
 

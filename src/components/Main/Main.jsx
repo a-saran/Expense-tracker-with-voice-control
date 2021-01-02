@@ -11,16 +11,18 @@ import {
 import useStyles from "./styles";
 import Form from "./Form/Form";
 import List from "./List/List";
+import { useExpenseTracker } from "../../context/context";
 
 const Main = () => {
   const classes = useStyles();
+  const { balance } = useExpenseTracker();
 
   return (
     <Card className={classes.root}>
       <CardHeader title="Expense Tracker" subheader="Powered by speechly" />
       <CardContent>
         <Typography align="center" variant="h5">
-          Total balance $100
+          Total balance {balance}
         </Typography>
         <Typography
           variant="subtitle1"

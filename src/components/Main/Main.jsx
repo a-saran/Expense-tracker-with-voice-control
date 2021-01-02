@@ -12,6 +12,7 @@ import useStyles from "./styles";
 import Form from "./Form/Form";
 import List from "./List/List";
 import { useExpenseTracker } from "../../context/context";
+import InfoCard from "../InfoCard";
 
 const Main = () => {
   const classes = useStyles();
@@ -19,7 +20,7 @@ const Main = () => {
 
   return (
     <Card className={classes.root}>
-      <CardHeader title="Expense Tracker" subheader="Powered by speechly" />
+      <CardHeader title="Expense Tracker" subheader="Created by Saran" />
       <CardContent>
         <Typography align="center" variant="h5">
           Total balance {balance}
@@ -28,8 +29,7 @@ const Main = () => {
           variant="subtitle1"
           style={{ lineHeight: "1.5em", marginTop: "20px" }}
         >
-          {/* InfoCard */}
-          Tyy saying: add income for $100 in category salary for monday...
+          <InfoCard />
         </Typography>
         <Divider />
         <Form />

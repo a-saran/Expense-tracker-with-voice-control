@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Typography,
@@ -10,6 +10,7 @@ import {
   Select
 } from "@material-ui/core";
 import { v4 as uuid } from "uuid";
+import { useSpeechContext } from "@speechly/react-client";
 
 import useStyles from "./styles.js";
 import { useExpenseTracker } from "../../../context/context.js";
@@ -30,6 +31,81 @@ const Form = () => {
   const classes = useStyles();
   const [formData, setFormData] = useState(initialState);
   const { addTransaction } = useExpenseTracker();
+  const { segment } = useSpeechContext();
+
+  useEffect(() => {
+    if (segment) {
+      if (segment.intent.intent === "add_expense") {
+        setFormData(formData => ({
+          ...formData,
+          type: "Expense"
+        }));
+      } else if (segment.intent.intent === "add_income") {
+        setFormData(formData => ({
+          ...formData,
+          type: "Income"
+        }));
+      } else if (
+        segment.isFinal &&
+        segment.intent.intent === "create_transaction"
+      ) {
+        return createTransaction();
+      } else if (
+        segment.isFinal &&
+        segment.intent.intent === "cancel_transaction"
+      ) {
+        setFormData(initialState);
+      }
+
+      segment.entities.forEach(e => {
+        const category = `${e.value.charAt(0)}${e.value
+          .slice(1)
+          .toLowerCase()}`;
+
+        switch (e.type) {
+          case "amount":
+            setFormData(formData => ({
+              ...formData,
+              amount: e.value
+            }));
+            break;
+          case "category":
+            if (incomeCategories.map(i => i.type).includes(category)) {
+              setFormData(formData => ({
+                ...formData,
+                category,
+                type: "Income"
+              }));
+            } else if (expenseCategories.map(i => i.type).includes(category)) {
+              setFormData(formData => ({
+                ...formData,
+                category,
+                type: "Expense"
+              }));
+            }
+            break;
+          case "date":
+            setFormData(formData => ({
+              ...formData,
+              date: e.value
+            }));
+            break;
+          default:
+            break;
+        }
+      });
+
+      if (
+        segment.isFinal &&
+        formData.amount &&
+        formData.category &&
+        formData.type &&
+        formData.date
+      ) {
+        createTransaction();
+      }
+    }
+  }, [segment]);
 
   const createTransaction = () => {
     const transaction = {
@@ -38,6 +114,7 @@ const Form = () => {
       id: uuid()
     };
     addTransaction(transaction);
+    setFormData(initialState);
   };
 
   const onHandleChange = ({ target: { name, value } }) => {
@@ -51,7 +128,7 @@ const Form = () => {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Typography align="center" variant="subtitle2" gutterBottom>
-          ...
+          {segment && segment.words.map(w => w.value).join(" ")}
         </Typography>
       </Grid>
       <Grid item xs={6}>
